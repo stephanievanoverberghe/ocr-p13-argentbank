@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Account from '../components/Account';
+import Cookies from 'js-cookie';
 
 function ProfilePage() {
     const [firstName, setFirstName] = useState('');
@@ -25,9 +26,9 @@ function ProfilePage() {
     ];
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
         if (!token) {
-            navigate('/login'); // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+            navigate('/'); // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
             return;
         }
 
