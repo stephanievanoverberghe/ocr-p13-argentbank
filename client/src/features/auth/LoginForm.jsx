@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { loginUser } from '../../apis/login';
 
 const schema = yup.object().shape({
     username: yup.string().required('The username is required.'),
@@ -10,7 +11,7 @@ const schema = yup.object().shape({
 });
 
 function LoginForm() {
-    const { login } = useAuth(); // Utiliser le contexte
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const {
@@ -23,27 +24,9 @@ function LoginForm() {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch('http://localhost:3001/api/v1/user/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: data.username,
-                    password: data.password,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Invalid credentials');
-            }
-
-            const result = await response.json();
-
-            // Met à jour le contexte avec les données utilisateur et le token
+            const result = await loginUser(data);
             login(result.body.token, { firstName: result.body.firstName });
 
-            // Redirige vers la page de profil
             navigate('/profile');
         } catch (error) {
             console.error('Erreur lors de la connexion :', error);

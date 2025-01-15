@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Account from '../components/Account';
-import Cookies from 'js-cookie';
+import { fetchUserProfile } from '../apis/profile';
 
 function ProfilePage() {
     const [firstName, setFirstName] = useState('');
@@ -26,30 +26,17 @@ function ProfilePage() {
     ];
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if (!token) {
-            navigate('/'); // Redirige vers la page de connexion si l'utilisateur n'est pas connecté
-            return;
+        async function getUserProfile() {
+            try {
+                const data = await fetchUserProfile();
+                setFirstName(data.body.firstName);
+            } catch (error) {
+                console.error('Erreur:', error.message);
+                navigate('/login');
+            }
         }
 
-        fetch('http://localhost:3001/api/v1/user/profile', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la récupération des données utilisateur');
-                }
-                return response.json();
-            })
-            .then((data) => setFirstName(data.body.firstName))
-            .catch((error) => {
-                console.error('Erreur:', error);
-                navigate('/login');
-            });
+        getUserProfile();
     }, [navigate]);
 
     return (

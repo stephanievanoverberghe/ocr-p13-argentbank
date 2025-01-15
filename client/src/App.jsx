@@ -13,8 +13,8 @@ function App() {
     const isBlackBackground = darkBackgroundPages.includes(location.pathname);
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <AuthProvider>
+        <AuthProvider>
+            <div className="flex flex-col min-h-screen">
                 <Header />
                 <main className={`flex-grow ${isBlackBackground ? 'bg-[#12002b] text-white' : 'bg-white'} ${isLoginPage ? 'flex items-center justify-center' : ''}`}>
                     <Suspense>
@@ -22,8 +22,8 @@ function App() {
                     </Suspense>
                 </main>
                 <Footer />
-            </AuthProvider>
-        </div>
+            </div>
+        </AuthProvider>
     );
 }
 
