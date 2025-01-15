@@ -27,3 +27,31 @@ export async function fetchUserProfile() {
 
     return response.json();
 }
+
+/**
+ * Met à jour les informations utilisateur.
+ * @param {Object} updatedData Les nouvelles données utilisateur.
+ * @returns {Promise<Object>} Les données mises à jour.
+ */
+export async function updateUserProfile(updatedData) {
+    const token = Cookies.get('token');
+    if (!token) {
+        throw new Error('No token found');
+    }
+
+    const response = await fetch(API_PROFILE, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to update user profile');
+    }
+
+    return response.json();
+}
