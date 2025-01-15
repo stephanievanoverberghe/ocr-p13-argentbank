@@ -1,47 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateFirstName } from '../redux/userSlice';
 import Account from '../components/Account';
 import { fetchUserProfile, updateUserProfile } from '../apis/profile';
-import Cookies from 'js-cookie';
+import { accounts } from '../data/account';
 
 function ProfilePage() {
-    const [firstName, setFirstName] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedName, setEditedName] = useState('');
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const accounts = [
-        {
-            title: 'Argent Bank Checking (x8349)',
-            amount: '$2,082.79',
-            description: 'Available Balance',
-        },
-        {
-            title: 'Argent Bank Savings (x6712)',
-            amount: '$10,928.42',
-            description: 'Available Balance',
-        },
-        {
-            title: 'Argent Bank Credit Card (x8349)',
-            amount: '$184.30',
-            description: 'Current Balance',
-        },
-    ];
+    // Récupération des données utilisateur depuis Redux
+    const { firstName } = useSelector((state) => state.user);
 
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedName, setEditedName] = useState('');
+
+    // Charger les données utilisateur au montage
     useEffect(() => {
         async function getUserProfile() {
             try {
                 const data = await fetchUserProfile();
-                setFirstName(data.body.firstName);
+                dispatch(updateFirstName({ firstName: data.body.firstName }));
             } catch (error) {
                 console.error('Erreur:', error.message);
-                Cookies.remove('token');
                 navigate('/login');
             }
         }
 
         getUserProfile();
-    }, [navigate]);
+    }, [dispatch, navigate]);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -51,7 +39,7 @@ function ProfilePage() {
     const handleSaveClick = async () => {
         try {
             await updateUserProfile({ firstName: editedName });
-            setFirstName(editedName); // Met à jour l'affichage avec le nouveau prénom
+            dispatch(updateFirstName({ firstName: editedName })); // Met à jour Redux
             setIsEditing(false);
         } catch (error) {
             console.error('Erreur lors de la mise à jour du profil :', error.message);

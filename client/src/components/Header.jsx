@@ -1,9 +1,19 @@
-import { Link, NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser } from '../redux/userSlice';
 import logo from '../assets/images/argentBankLogo.png';
 
 function Header() {
-    const { user, logout } = useAuth();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // Récupération des données utilisateur depuis Redux
+    const { firstName, isAuthenticated } = useSelector((state) => state.user);
+
+    const handleLogout = () => {
+        dispatch(clearUser()); // Réinitialise le store
+        navigate('/'); // Redirige vers la page d'accueil
+    };
 
     return (
         <header>
@@ -12,13 +22,13 @@ function Header() {
                     <img src={logo} alt="Argent Bank Logo" className="max-w-full w-[200px]" />
                 </Link>
                 <div className="flex items-center">
-                    {user ? (
+                    {isAuthenticated ? (
                         <>
                             <NavLink to="/profile" className="no-underline hover:underline font-bold flex items-center mr-4">
                                 <i className="fa fa-user-circle mr-2"></i>
-                                {user.firstName}
+                                {firstName}
                             </NavLink>
-                            <button onClick={logout} className="no-underline hover:underline font-bold flex items-center">
+                            <button onClick={handleLogout} className="no-underline hover:underline font-bold flex items-center">
                                 <i className="fa fa-sign-out mr-2"></i>
                                 Sign Out
                             </button>

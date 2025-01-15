@@ -2,7 +2,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/userSlice';
 import { loginUser } from '../../apis/login';
 
 const schema = yup.object().shape({
@@ -11,7 +12,7 @@ const schema = yup.object().shape({
 });
 
 function LoginForm() {
-    const { login } = useAuth();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const {
@@ -25,8 +26,12 @@ function LoginForm() {
     const onSubmit = async (data) => {
         try {
             const result = await loginUser(data);
-            login(result.body.token, { firstName: result.body.firstName });
-
+            dispatch(
+                setUser({
+                    firstName: result.body.firstName,
+                    token: result.body.token,
+                })
+            );
             navigate('/profile');
         } catch (error) {
             console.error('Erreur lors de la connexion :', error);
@@ -46,7 +51,6 @@ function LoginForm() {
                     <input type="text" id="username" {...register('username')} className="border-black border-[1px] rounded-sm" />
                     {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
                 </div>
-
                 <div className="flex flex-col text-left mb-4">
                     <label htmlFor="password" className="font-bold">
                         Password
@@ -54,7 +58,6 @@ function LoginForm() {
                     <input type="password" id="password" {...register('password')} className="border-black border-[1px] rounded-sm" />
                     {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                 </div>
-
                 <button type="submit" className="block w-full text-white underline p-2 text-xl font-bold mt-4 border-[#00bc77] border-[1px] bg-[#00bc77]">
                     Sign In
                 </button>
