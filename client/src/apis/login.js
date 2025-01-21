@@ -1,9 +1,12 @@
 const API_LOGIN = 'http://localhost:3001/api/v1/user/login';
 
 /**
- * Appelle l'API pour se connecter.
- * @param {Object} credentials - Les informations de connexion (email, password).
- * @returns {Promise<Object>} Les données de l'utilisateur et le token.
+ * Effectue une requête pour connecter un utilisateur.
+ * @param {Object} credentials - Les identifiants de l'utilisateur.
+ * @param {string} credentials.username - L'email ou le nom d'utilisateur.
+ * @param {string} credentials.password - Le mot de passe.
+ * @returns {Promise<Object>} Les données utilisateur et le token.
+ * @throws {Error} Si la requête échoue ou si les identifiants sont invalides.
  */
 export async function loginUser(credentials) {
     const response = await fetch(API_LOGIN, {

@@ -6,15 +6,22 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/userSlice';
 import { loginUser } from '../../apis/login';
 
+// Schéma de validation des données avec Yup
 const schema = yup.object().shape({
     username: yup.string().required('The username is required.'),
     password: yup.string().required('The password is required.'),
 });
 
+/**
+ * Formulaire de connexion des utilisateurs.
+ * Permet de saisir un nom d'utilisateur et un mot de passe pour se connecter au système.
+ * @returns {JSX.Element} Composant du formulaire de connexion.
+ */
 function LoginForm() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const dispatch = useDispatch(); // Utilisé pour envoyer des actions Redux
+    const navigate = useNavigate(); // Permet de rediriger l'utilisateur après la connexion
 
+    // Configuration du formulaire avec react-hook-form et Yup pour la validation
     const {
         register,
         handleSubmit,
@@ -23,16 +30,20 @@ function LoginForm() {
         resolver: yupResolver(schema),
     });
 
+    /**
+     * Gère la soumission du formulaire.
+     * @param {Object} data - Données du formulaire {username, password}.
+     */
     const onSubmit = async (data) => {
         try {
-            const result = await loginUser(data);
+            const result = await loginUser(data); // Appel API pour se connecter
             dispatch(
                 setUser({
                     firstName: result.body.firstName,
                     token: result.body.token,
                 })
             );
-            navigate('/profile');
+            navigate('/profile'); // Redirection vers la page de profil
         } catch (error) {
             console.error('Erreur lors de la connexion :', error);
             alert('Invalid credentials');

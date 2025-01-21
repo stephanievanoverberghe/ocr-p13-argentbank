@@ -3,8 +3,9 @@ import Cookies from 'js-cookie';
 const API_PROFILE = 'http://localhost:3001/api/v1/user/profile';
 
 /**
- * Récupère les informations utilisateur.
+ * Récupère les informations de l'utilisateur connecté.
  * @returns {Promise<Object>} Les données utilisateur.
+ * @throws {Error} Si aucun token n'est trouvé ou si la requête échoue.
  */
 export async function fetchUserProfile() {
     const token = Cookies.get('token');
@@ -29,9 +30,11 @@ export async function fetchUserProfile() {
 }
 
 /**
- * Met à jour les informations utilisateur.
- * @param {Object} updatedData Les nouvelles données utilisateur.
- * @returns {Promise<Object>} Les données mises à jour.
+ * Met à jour les informations de l'utilisateur connecté.
+ * @param {Object} updatedData - Les nouvelles données utilisateur.
+ * @param {string} updatedData.firstName - Le nouveau prénom de l'utilisateur.
+ * @returns {Promise<Object>} Les données mises à jour de l'utilisateur.
+ * @throws {Error} Si aucun token n'est trouvé ou si la requête échoue.
  */
 export async function updateUserProfile(updatedData) {
     const token = Cookies.get('token');

@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+    title: Argent Bank Transaction API
+    description: API for managing user transactions, including retrieving, creating, updating, and deleting transactions.
+    version: 1.0.0
+
+paths:
+    /transactions:
+        get:
+            summary: Retrieve all transactions for a specific account.
+            description: Fetch a list of all transactions for a specified account, grouped by the current month.
+            parameters:
+                - name: accountId
+                  in: query
+                  description: The ID of the account to fetch transactions for.
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: A list of transactions for the specified account.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Transaction'
+                '404':
+                    description: Account not found.
+                '500':
+                    description: Internal server error.
+
+        post:
+            summary: Create a new transaction.
+            description: Add a new transaction to the specified account.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Transaction'
+            responses:
+                '201':
+                    description: Transaction created successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Transaction'
+                '400':
+                    description: Invalid input data.
+                '500':
+                    description: Internal server error.
+
+    /transactions/{transactionId}:
+        get:
+            summary: Retrieve details of a specific transaction.
+            description: Fetch the details of a transaction by its unique ID.
+            parameters:
+                - name: transactionId
+                  in: path
+                  description: The unique ID of the transaction to retrieve.
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Transaction details retrieved successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Transaction'
+                '404':
+                    description: Transaction not found.
+                '500':
+                    description: Internal server error.
+
+        put:
+            summary: Update an existing transaction.
+            description: Modify the details of an existing transaction.
+            parameters:
+                - name: transactionId
+                  in: path
+                  description: The unique ID of the transaction to update.
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Transaction'
+            responses:
+                '200':
+                    description: Transaction updated successfully.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Transaction'
+                '400':
+                    description: Invalid input data.
+                '404':
+                    description: Transaction not found.
+                '500':
+                    description: Internal server error.
+
+        delete:
+            summary: Delete a specific transaction.
+            description: Remove a transaction from the system.
+            parameters:
+                - name: transactionId
+                  in: path
+                  description: The unique ID of the transaction to delete.
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Transaction deleted successfully.
+                '404':
+                    description: Transaction not found.
+                '500':
+                    description: Internal server error.
+
+components:
+    schemas:
+        Transaction:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Unique identifier of the transaction.
+                date:
+                    type: string
+                    format: date
+                    description: Date when the transaction occurred.
+                description:
+                    type: string
+                    description: Description of the transaction.
+                amount:
+                    type: number
+                    format: float
+                    description: The monetary amount of the transaction.
+                accountId:
+                    type: string
+                    description: The ID of the account associated with the transaction.
+            required:
+                - id
+                - date
+                - amount
+                - accountId

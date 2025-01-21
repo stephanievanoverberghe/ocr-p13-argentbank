@@ -6,17 +6,23 @@ import Account from '../components/Account';
 import { fetchUserProfile, updateUserProfile } from '../apis/profile';
 import { accounts } from '../data/account';
 
+/**
+ * Composant de la page de profil utilisateur.
+ * Permet d'afficher les informations de l'utilisateur et de modifier son prénom.
+ * @returns {JSX.Element} Composant de la page de profil.
+ */
 function ProfilePage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // Récupération des données utilisateur depuis Redux
-    const { firstName } = useSelector((state) => state.user);
+    const { firstName } = useSelector((state) => state.user); // Récupération des données utilisateur depuis Redux
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState('');
 
-    // Charger les données utilisateur au montage
+    /**
+     * Charge les données utilisateur lors du montage du composant.
+     */
     useEffect(() => {
         async function getUserProfile() {
             try {
@@ -24,18 +30,24 @@ function ProfilePage() {
                 dispatch(updateFirstName({ firstName: data.body.firstName }));
             } catch (error) {
                 console.error('Erreur:', error.message);
-                navigate('/login');
+                navigate('/login'); // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
             }
         }
 
         getUserProfile();
     }, [dispatch, navigate]);
 
+    /**
+     * Active le mode édition.
+     */
     const handleEditClick = () => {
         setIsEditing(true);
         setEditedName(firstName); // Initialise avec la valeur actuelle
     };
 
+    /**
+     * Enregistre le nouveau prénom dans la base de données et dans Redux.
+     */
     const handleSaveClick = async () => {
         try {
             await updateUserProfile({ firstName: editedName });
@@ -46,6 +58,9 @@ function ProfilePage() {
         }
     };
 
+    /**
+     * Annule l'édition et réinitialise le champ de saisie.
+     */
     const handleCancelClick = () => {
         setIsEditing(false);
         setEditedName('');
