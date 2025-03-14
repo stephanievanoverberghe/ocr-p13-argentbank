@@ -82,7 +82,7 @@ function LoginForm() {
                 <button type="submit" className="block w-full text-white underline p-2 text-xl font-bold mt-4 border-[#00bc77] border-[1px] bg-[#00bc77]">
                     Sign In
                 </button>
-                {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
+                {errorMessage && <p className="text-red-500 text-sm mt-2 transition-opacity duration-300 ease-in-out">{errorMessage}</p>}
             </form>
         </section>
     );
