@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -21,6 +22,8 @@ function LoginForm() {
     const dispatch = useDispatch(); // Utilisé pour envoyer des actions Redux
     const navigate = useNavigate(); // Permet de rediriger l'utilisateur après la connexion
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     // Configuration du formulaire avec react-hook-form et Yup pour la validation
     const {
         register,
@@ -43,10 +46,17 @@ function LoginForm() {
                     token: result.body.token,
                 })
             );
-            navigate('/profile'); // Redirection vers la page de profil
+            navigate('/profile');
         } catch (error) {
             console.error('Erreur lors de la connexion :', error);
-            alert('Invalid credentials');
+
+            let message = 'Une erreur est survenue. Merci de réessayer plus tard.';
+
+            if (error.message) {
+                message = error.message;
+            }
+
+            setErrorMessage(message);
         }
     };
 
@@ -72,6 +82,7 @@ function LoginForm() {
                 <button type="submit" className="block w-full text-white underline p-2 text-xl font-bold mt-4 border-[#00bc77] border-[1px] bg-[#00bc77]">
                     Sign In
                 </button>
+                {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
             </form>
         </section>
     );
