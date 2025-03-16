@@ -237,7 +237,21 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Transaction'
+                            type: object
+                            properties:
+                                amount:
+                                    type: number
+                                    format: float
+                                    description: Updated transaction amount
+                                description:
+                                    type: string
+                                    description: Updated transaction description
+                                category:
+                                    type: string
+                                    description: Updated transaction category
+                                notes:
+                                    type: string
+                                    description: Additional notes for the transaction
             responses:
                 '200':
                     description: Transaction updated successfully
@@ -254,7 +268,8 @@ paths:
         delete:
             tags:
                 - Transactions
-            summary: Delete a specific transaction
+            summary: Delete a specific transaction or remove category/notes
+            description: Deletes a transaction entirely or removes only category/notes if specified.
             parameters:
                 - name: transactionId
                   in: path
@@ -262,9 +277,16 @@ paths:
                   required: true
                   schema:
                       type: string
+                - name: removeFields
+                  in: query
+                  description: Optional parameter to specify if only category/notes should be removed instead of full deletion
+                  required: false
+                  schema:
+                      type: string
+                      enum: [category, notes, all]
             responses:
                 '200':
-                    description: Transaction deleted successfully
+                    description: Transaction or specified fields deleted successfully
                 '404':
                     description: Transaction not found
                 '500':
@@ -360,3 +382,20 @@ components:
                 accountId:
                     type: string
                     description: The ID of the account associated with the transaction.
+                category:
+                    type: string
+                    description: The category of the transaction (e.g., Food, Rent, Entertainment).
+                    enum:
+                        - Food
+                        - Rent
+                        - Entertainment
+                        - Transportation
+                        - Health
+                        - Shopping
+                        - Bills
+                        - Other
+                    example: Food
+                notes:
+                    type: string
+                    description: Additional notes related to the transaction.
+                    example: 'Dinner at a restaurant'
