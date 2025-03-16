@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 // État initial du slice utilisateur
 const initialState = {
     firstName: '',
+    lastName: '',
     token: Cookies.get('token') || null,
     isAuthenticated: !!Cookies.get('token'),
 };
@@ -47,9 +48,17 @@ const userSlice = createSlice({
         updateFirstName: (state, action) => {
             state.firstName = action.payload.firstName;
         },
+        /**
+         * Met à jour le nom de l'utilisateur dans le store.
+         * @param {Object} state - État actuel du store.
+         * @param {Object} action - Action contenant le nouveau prénom.
+         */
+        updateLastName: (state, action) => {
+            state.lastName = action.payload.lastName;
+        },
     },
 });
 
-export const { setUser, clearUser, updateFirstName } = userSlice.actions;
+export const { setUser, clearUser, updateFirstName, updateLastName } = userSlice.actions;
 
 export default userSlice.reducer;

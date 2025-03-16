@@ -58,3 +58,4 @@ export async function updateUserProfile(updatedData) {
 
     return response.json();
 }
+
